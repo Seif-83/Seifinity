@@ -86,8 +86,8 @@ export default function Reviews() {
 
   const formatDate = (date: any) => {
     if (!date) return 'Just now';
-    if (date.seconds) return new Date(date.seconds * 1000).toLocaleDateString();
-    return new Date(date).toLocaleDateString();
+    if (date.seconds) return new Date(date.seconds * 1000).toLocaleDateString('en-GB');
+    return new Date(date).toLocaleDateString('en-GB');
   };
 
   return (

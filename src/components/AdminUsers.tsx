@@ -305,7 +305,7 @@ export default function AdminUsers() {
               </div>
               <div className="flex items-center gap-3 text-xs text-white/50">
                 <Calendar className="w-3.5 h-3.5 text-white/20" />
-                <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
+                <span>Joined {new Date(user.createdAt).toLocaleDateString('en-GB')}</span>
               </div>
             </div>
 
@@ -402,7 +402,7 @@ export default function AdminUsers() {
                   <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
                     <p className="text-[10px] uppercase font-bold text-white/20 mb-1">Account Created</p>
                     <p className="text-sm font-medium text-white/80 flex items-center gap-2">
-                       <Calendar className="w-4 h-4 text-cyan-500/40" /> {new Date(selectedUser.createdAt).toLocaleDateString()}
+                       <Calendar className="w-4 h-4 text-cyan-500/40" /> {new Date(selectedUser.createdAt).toLocaleDateString('en-GB')}
                     </p>
                   </div>
                 </div>
