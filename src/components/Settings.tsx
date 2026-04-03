@@ -15,6 +15,17 @@ export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // Synchronize local state with Firestore/Auth data when it loads
+  React.useEffect(() => {
+    if (userData) {
+      setDisplayName(userData.displayName || user?.displayName || '');
+      if (userData.avatar) {
+        setAvatarStyle(userData.avatar.style || 'avataaars');
+        setAvatarSeed(userData.avatar.seed || userData.displayName || 'User');
+      }
+    }
+  }, [userData, user]);
+
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
