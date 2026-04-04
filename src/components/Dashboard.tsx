@@ -26,12 +26,14 @@ import {
 } from 'recharts';
 import { cn } from '../lib/utils';
 import { globalStatsData } from '../data/mockData';
+import { useAuth } from '../auth/AuthContext';
 
 interface DashboardProps {
   setActiveTab: (tab: string) => void;
 }
 
 export default function Dashboard({ setActiveTab }: DashboardProps) {
+  const { isAdmin } = useAuth();
   const [stats, setStats] = React.useState({ users: '0', reviews: '0' });
   const [growthData, setGrowthData] = React.useState<any[]>([]);
 
@@ -132,7 +134,7 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {[
-          { label: 'Total Learners', value: stats.users, trend: '+ Live', icon: Users, color: 'text-cyan-400' },
+          ...(isAdmin ? [{ label: 'Total Learners', value: stats.users, trend: '+ Live', icon: Users, color: 'text-cyan-400' }] : []),
           { label: 'Community Reviews', value: stats.reviews, trend: '+ Real', icon: Activity, color: 'text-blue-400' },
           { label: 'System Uptime', value: '99.9%', trend: 'Stable', icon: Shield, color: 'text-emerald-400' },
           { label: 'Project Phase', value: 'BETA v1', trend: 'Growing', icon: TrendingUp, color: 'text-purple-400' },
@@ -160,7 +162,8 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
 
 
       {/* Analytics Section */}
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {isAdmin && (
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-3 glass p-5 md:p-8 rounded-3xl border border-white/5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
@@ -220,6 +223,7 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
         </div>
 
       </section>
+      )}
 
     </div>
   );

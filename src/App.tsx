@@ -128,7 +128,7 @@ export default function App() {
     { id: 'dashboard', icon: LayoutDashboard, label: 'Control Center' },
     { id: 'teachers', icon: Users, label: 'Teachers' },
     { id: 'reviews', icon: MessageSquare, label: 'Reviews' },
-    { id: 'analytics', icon: Zap, label: 'Analytics' },
+    ...(isAdmin ? [{ id: 'analytics', icon: Zap, label: 'Analytics' }] : []),
     ...(isAdmin ? [{ id: 'users', icon: ShieldCheck, label: 'User Admin' }] : []),
     { id: 'settings', icon: Settings, label: 'Settings' },
   ];

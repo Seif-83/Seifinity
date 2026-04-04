@@ -6,12 +6,26 @@ import {
 } from 'recharts';
 import { collection, getCountFromServer, getDocs } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { TrendingUp, Activity, Users, Globe, Zap, ArrowUpRight } from 'lucide-react';
+import { TrendingUp, Activity, Users, Globe, Zap, ArrowUpRight, ShieldAlert } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useAuth } from '../auth/AuthContext';
 
 export default function Analytics() {
+  const { isAdmin } = useAuth();
   const [stats, setStats] = React.useState({ users: '0', reviews: '0' });
   const [growthData, setGrowthData] = React.useState<any[]>([]);
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-8 glass rounded-[2.5rem] border border-rose-500/10">
+        <div className="w-20 h-20 bg-rose-500/10 rounded-3xl flex items-center justify-center mb-6 border border-rose-500/20">
+          <ShieldAlert className="w-10 h-10 text-rose-500" />
+        </div>
+        <h2 className="text-2xl font-display font-bold mb-2">Access Restricted</h2>
+        <p className="text-white/40 max-w-md">Analytics data is only visible to platform administrators. If you believe this is an error, please contact the system owner.</p>
+      </div>
+    );
+  }
 
   React.useEffect(() => {
     const fetchData = async () => {
