@@ -3,20 +3,20 @@ import { motion } from 'motion/react';
 import { ExternalLink, Award, BookOpen } from 'lucide-react';
 
 const teachers = [
-  { 
-    name: 'Mr. Amr Mohsen', 
-    subject: 'Mathematics', 
-    description: 'Specialist in teaching Mathematics for preparatory levels, providing a solid foundation for future academic success.',
-    platformUrl: 'https://mr-amr-platform.vercel.app/',
-    image: 'Amr-Mohsen.png'
-  },
-  { 
-    name: 'Mrs. Safaa Esmail', 
-    subject: 'Science', 
-    description: 'Specialist in teaching Science for preparatory levels, dedicated to making complex concepts simple and engaging for all students.',
-    platformUrl: 'https://mrs-safaa-platform.vercel.app/#/',
-    image: 'Safaa-Esmail.png'
-  }
+  // { 
+  //   name: 'Mr. Amr Mohsen', 
+  //   subject: 'Mathematics', 
+  //   description: 'Specialist in teaching Mathematics for preparatory levels, providing a solid foundation for future academic success.',
+  //   platformUrl: 'https://mr-amr-platform.vercel.app/',
+  //   image: 'Amr-Mohsen.png'
+  // },
+  // { 
+  //   name: 'Mrs. Safaa Esmail', 
+  //   subject: 'Science', 
+  //   description: 'Specialist in teaching Science for preparatory levels, dedicated to making complex concepts simple and engaging for all students.',
+  //   platformUrl: 'https://mrs-safaa-platform.vercel.app/#/',
+  //   image: 'Safaa-Esmail.png'
+  // }
 ];
 
 export default function Teachers() {
