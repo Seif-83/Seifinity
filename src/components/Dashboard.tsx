@@ -131,7 +131,7 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
       </section>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className={cn("grid grid-cols-1 sm:grid-cols-2 gap-6", isAdmin ? "lg:grid-cols-4" : "lg:grid-cols-3")}>
 
         {[
           ...(isAdmin ? [{ label: 'Total Learners', value: stats.users, trend: '+ Live', icon: Users, color: 'text-cyan-400' }] : []),
