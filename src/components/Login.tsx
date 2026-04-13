@@ -24,6 +24,7 @@ export default function Login() {
   // Forgot password state
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [resetConfirm, setResetConfirm] = useState(false);   // confirmation step
   const [resetSent, setResetSent] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [resetError, setResetError] = useState('');
@@ -99,12 +100,40 @@ export default function Login() {
     }
   };
 
-  const handleForgotPassword = async (e: React.FormEvent) => {
+  // ── Step 1: validate email then move to confirmation screen ──
+  const handleResetEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setResetError('');
+
+    // Client-side rate limiting: max 3 attempts per hour per device
+    const RATE_KEY = 'pwd_reset_attempts';
+    const now = Date.now();
+    const stored = JSON.parse(localStorage.getItem(RATE_KEY) || '[]') as number[];
+    const recent = stored.filter((t) => now - t < 60 * 60 * 1000); // last 1 hour
+    if (recent.length >= 3) {
+      const earliest = Math.min(...recent);
+      const minutesLeft = Math.ceil((60 * 60 * 1000 - (now - earliest)) / 60000);
+      setResetError(`Too many reset attempts. Please wait ${minutesLeft} minute${minutesLeft !== 1 ? 's' : ''} before trying again.`);
+      return;
+    }
+
+    setResetConfirm(true);
+  };
+
+  // ── Step 2: user confirmed — actually send the email ──
+  const handleForgotPassword = async () => {
     setResetLoading(true);
     setResetError('');
     try {
       await sendPasswordResetEmail(auth, resetEmail);
+
+      // Record this attempt in localStorage
+      const RATE_KEY = 'pwd_reset_attempts';
+      const now = Date.now();
+      const stored = JSON.parse(localStorage.getItem(RATE_KEY) || '[]') as number[];
+      const recent = stored.filter((t) => now - t < 60 * 60 * 1000);
+      localStorage.setItem(RATE_KEY, JSON.stringify([...recent, now]));
+
       setResetSent(true);
     } catch (err: any) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
@@ -114,8 +143,9 @@ export default function Login() {
       } else if (err.code === 'auth/too-many-requests') {
         setResetError('Too many attempts. Please wait a few minutes and try again.');
       } else {
-        setResetError(err.message || 'Failed to send reset email. Please try again.');
+        setResetError('Failed to send reset email. Please try again.');
       }
+      setResetConfirm(false);
     } finally {
       setResetLoading(false);
     }
@@ -124,8 +154,17 @@ export default function Login() {
   const handleBackToLogin = () => {
     setShowForgotPassword(false);
     setResetSent(false);
+    setResetConfirm(false);
     setResetEmail('');
     setResetError('');
+  };
+
+  // Mask email for display: se***@gmail.com
+  const maskEmail = (e: string) => {
+    const [local, domain] = e.split('@');
+    if (!domain) return e;
+    const visible = local.slice(0, 2);
+    return `${visible}${'*'.repeat(Math.max(3, local.length - 2))}@${domain}`;
   };
 
   return (
@@ -156,7 +195,7 @@ export default function Login() {
 
             <AnimatePresence mode="wait">
               {resetSent ? (
-                /* ── Success state ── */
+                /* ── Success ── */
                 <motion.div
                   key="reset-success"
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -181,8 +220,63 @@ export default function Login() {
                     Back to Login
                   </button>
                 </motion.div>
+              ) : resetConfirm ? (
+                /* ── Confirmation step ── */
+                <motion.div
+                  key="reset-confirm"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -30 }}
+                  className="flex flex-col items-center text-center py-2"
+                >
+                  <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5">
+                    <Mail className="w-7 h-7 text-amber-400" />
+                  </div>
+                  <h2 className="text-xl font-display font-bold text-white mb-2">Confirm Your Email</h2>
+                  <p className="text-white/40 text-sm leading-relaxed mb-4">
+                    We'll send a reset link to:
+                  </p>
+                  <div className="w-full bg-white/5 border border-amber-500/20 rounded-xl px-4 py-3 mb-2">
+                    <p className="text-amber-400 font-semibold text-sm break-all tracking-wide">{maskEmail(resetEmail)}</p>
+                  </div>
+                  <p className="text-white/25 text-xs mb-6">
+                    If this is your email, tap <span className="text-white/50">Confirm &amp; Send</span> to proceed.
+                  </p>
+
+                  {resetError && (
+                    <motion.div
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="w-full mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-medium"
+                    >
+                      {resetError}
+                    </motion.div>
+                  )}
+
+                  <button
+                    onClick={handleForgotPassword}
+                    disabled={resetLoading}
+                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 mb-3 disabled:opacity-50 disabled:cursor-not-allowed group"
+                  >
+                    {resetLoading ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        Confirm &amp; Send
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setResetConfirm(false); setResetError(''); }}
+                    className="w-full py-3 bg-white/5 border border-white/10 hover:bg-white/10 text-white/50 rounded-xl transition-all text-sm"
+                  >
+                    Edit Email
+                  </button>
+                </motion.div>
               ) : (
-                /* ── Reset form ── */
+                /* ── Email entry form ── */
                 <motion.div key="reset-form">
                   <div className="flex flex-col items-center mb-8">
                     <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/20 flex items-center justify-center mb-4">
@@ -204,7 +298,7 @@ export default function Login() {
                     </motion.div>
                   )}
 
-                  <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <form onSubmit={handleResetEmailSubmit} className="space-y-4">
                     <div className="space-y-2">
                       <label className="text-xs text-white/40 uppercase tracking-widest font-bold">Email Address</label>
                       <div className="relative group">
