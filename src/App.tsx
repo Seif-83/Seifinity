@@ -15,7 +15,8 @@ import {
   ShieldCheck,
   User as UserIcon,
   Ban,
-  Instagram
+  Instagram,
+  Facebook
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { collection, query, orderBy, onSnapshot, limit, Timestamp } from 'firebase/firestore';
@@ -237,6 +238,13 @@ export default function App() {
             {isSidebarOpen && <span className="text-sm font-medium">Instagram</span>}
           </button>
           <button 
+            onClick={() => window.open('https://www.facebook.com/share/1AFmTsquFr/?mibextid=wwXIfr', '_blank')}
+            className="w-full flex items-center gap-4 p-3 rounded-xl text-white/50 hover:text-[#1877F2] hover:bg-[#1877F2]/5 transition-all group"
+          >
+            <Facebook className="w-5 h-5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+            {isSidebarOpen && <span className="text-sm font-medium">Facebook</span>}
+          </button>
+          <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="w-full flex items-center gap-4 p-3 rounded-xl text-white/50 hover:text-white hover:bg-white/5 transition-all"
           >
@@ -302,6 +310,20 @@ export default function App() {
                 >
                   <LogOut className="w-5 h-5" />
                   <span className="font-medium text-sm">Logout</span>
+                </button>
+                <button 
+                  onClick={() => window.open('https://www.instagram.com/seifinity?igsh=MXI2aTI3dHdoYmpwNw%3D%3D&utm_source=qr', '_blank')}
+                  className="w-full flex items-center gap-4 p-4 rounded-xl text-white/50 hover:text-pink-500 hover:bg-pink-500/5 transition-all group"
+                >
+                  <Instagram className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <span className="font-medium text-sm">Instagram</span>
+                </button>
+                <button 
+                  onClick={() => window.open('https://www.facebook.com/share/1AFmTsquFr/?mibextid=wwXIfr', '_blank')}
+                  className="w-full flex items-center gap-4 p-4 rounded-xl text-white/50 hover:text-[#1877F2] hover:bg-[#1877F2]/5 transition-all group"
+                >
+                  <Facebook className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <span className="font-medium text-sm">Facebook</span>
                 </button>
               </div>
             </motion.div>

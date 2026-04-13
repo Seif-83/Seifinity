@@ -10,7 +10,8 @@ import {
   ArrowRight,
   Monitor,
   Zap,
-  Instagram
+  Instagram,
+  Facebook
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { collection, getCountFromServer, getDocs } from 'firebase/firestore';
@@ -112,18 +113,24 @@ export default function Dashboard({ setActiveTab }: DashboardProps) {
             <p className="text-white/60 text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
               Manage, monitor, and scale all your teacher platforms from a single, high-performance interface. Designed for the next generation of education startups.
             </p>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div className="flex flex-row flex-wrap items-center gap-3">
               <button 
                 onClick={() => setActiveTab('teachers')}
-                className="px-6 md:px-8 py-3 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 group active:scale-95"
+                className="px-5 py-3 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 group active:scale-95 whitespace-nowrap"
               >
                 Meet Our Educators <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button 
                 onClick={() => window.open('https://www.instagram.com/seifinity?igsh=MXI2aTI3dHdoYmpwNw%3D%3D&utm_source=qr', '_blank')}
-                className="px-6 md:px-8 py-3 glass hover:bg-white/5 text-white font-bold rounded-xl transition-all border border-white/10 flex items-center justify-center gap-2 group active:scale-95"
+                className="px-5 py-3 glass hover:bg-white/5 text-white font-bold rounded-xl transition-all border border-white/10 flex items-center justify-center gap-2 group active:scale-95 whitespace-nowrap"
               >
-                <Instagram className="w-4 h-4 text-pink-500 group-hover:scale-110 transition-transform" /> Follow on Instagram
+                <Instagram className="w-4 h-4 text-pink-500 group-hover:scale-110 transition-transform flex-shrink-0" /> Follow on Instagram
+              </button>
+              <button 
+                onClick={() => window.open('https://www.facebook.com/share/1AFmTsquFr/?mibextid=wwXIfr', '_blank')}
+                className="px-5 py-3 glass hover:bg-[#1877F2]/10 text-white font-bold rounded-xl transition-all border border-white/10 hover:border-[#1877F2]/40 flex items-center justify-center gap-2 group active:scale-95 whitespace-nowrap"
+              >
+                <Facebook className="w-4 h-4 text-[#1877F2] group-hover:scale-110 transition-transform flex-shrink-0" /> Follow on Facebook
               </button>
             </div>
           </motion.div>
